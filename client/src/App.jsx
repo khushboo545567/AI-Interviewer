@@ -3,7 +3,11 @@ import { Route, Routes } from "react-router-dom";
 import Home from "./pages/Home.jsx";
 import Auth from "./pages/Auth";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { setUserData } from "./redux/userSlice.js";
+
 function App() {
+  const dispatch = useDispatch();
   useEffect(() => {
     const getUser = async () => {
       try {
@@ -13,13 +17,14 @@ function App() {
             withCredentials: true,
           },
         );
-        console.log(user.data);
+        dispatch(setUserData(user.data));
       } catch (error) {
         console.log(error);
+        dispatch(setUserData(null));
       }
     };
     getUser();
-  }, []);
+  }, [dispatch]);
   return (
     <Routes>
       <Route path="/" element={<Home />} />

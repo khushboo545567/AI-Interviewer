@@ -6,8 +6,11 @@ import { FcGoogle } from "react-icons/fc";
 import { auth, provider } from "../utils/firebase";
 import { linkWithCredential, signInWithPopup } from "firebase/auth";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { setUserData } from "../redux/userSlice";
 
 function Auth() {
+  const dispatch = useDispatch();
   const handleGooleAuth = async () => {
     try {
       const response = await signInWithPopup(auth, provider);
@@ -15,14 +18,16 @@ function Auth() {
       let User = response.user;
       let name = User.displayName;
       let email = User.email;
+
       const result = await axios.post(
         import.meta.env.VITE_SERVER_URL + "/api/v1/user/auth/google-auth",
         { name, email },
         { withCredentials: true },
       );
-      console.log(result);
+      useDispatch(setUserData(result.data));
     } catch (error) {
       console.log(error);
+      useDispatch(setUserData(null));
     }
   };
   return (
