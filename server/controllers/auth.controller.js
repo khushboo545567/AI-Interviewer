@@ -1,17 +1,21 @@
-import userModel from "../models/user.modle";
+import userModel from "../models/user.modle.js";
+import genToken from "../config/token.js";
 
 const googleAuth = async (req, res) => {
   try {
     const { name, email } = req.body;
     let user = await userModel.findOne({ email });
+
     if (!user) {
-      await userModel.create({ name, email });
+      user = await userModel.create({ name, email });
     }
-    let token = await genToken(user._id);
-    res.cookie("token", token, {
-      http: true,
+
+    const jwttoken = await genToken(user._id);
+
+    res.cookie("token", jwttoken, {
+      httpOnly: true,
       secure: false,
-      sameSite: "strict",
+      sameSite: "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
     return res.status(200).json(user);

@@ -4,6 +4,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import connectDB from "./config/connectdb.js";
 import authRouter from "./routers/auth.route.js";
+import userRoute from "./routers/user.route.js";
 
 dotenv.config();
 
@@ -16,7 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(
   cors({
-    origin: "*",
+    origin: "http://localhost:5173",
     credentials: true,
   }),
 );
@@ -28,8 +29,8 @@ app.get("/", (req, res) => {
   return res.json({ server: "hyyyyy" });
 });
 
-app.use("/api/v1/user", authRouter);
-
+app.use("/api/v1/user/auth", authRouter);
+app.use("/api/v1/user", userRoute);
 // DB Connection
 connectDB();
 
