@@ -16,7 +16,7 @@ function Step1setup({ onStart }) {
   const [mode, setMode] = useState("Technical");
   const [resumeFile, setResumeFile] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [porjects, setProjects] = useState([]);
+  const [projects, setProjects] = useState([]);
   const [skills, setSkills] = useState([]);
   const [resumeText, setResumeText] = useState("");
   const [analysisDone, setAnalysisDone] = useState(false);
@@ -184,7 +184,108 @@ function Step1setup({ onStart }) {
                   )}
                 </motion.div>
               )}
+              {/* SHOW ANALYZED DATA LIKE SKILLS ETC */}
 
+              {/* {analysisDone && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-gray-50 border border-gray-200 rounded-xl p-5 space-y-4"
+                >
+                  <h3 className="text-lg font-semibold text-gray-800">
+                    Resume Analysis Result
+                  </h3>
+                  {projects.length > 0 && (
+                    <div>
+                      <p className="font-medium text-gray-700 mb-1">
+                        Projects:
+                      </p>
+
+                      <ul className="list-disc list-inside text-gray-600">
+                        {projects.map((p, i) => (
+                          <li key={i}>{p}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {skills.length > 0 && (
+                    <div>
+                      <p className="font-medium text-gray-700 mb-1">Skills:</p>
+
+                      <div className="flex flex-wrap gap-2">
+                        {skills.map((s, i) => (
+                          <span
+                            key={i}
+                            className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm"
+                          >
+                            {s}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </motion.div>
+              )} */}
+
+              {analysisDone && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-white border border-gray-200 rounded-2xl p-6 shadow-lg space-y-6"
+                >
+                  <div className="text-center">
+                    <h3 className="text-xl font-bold text-gray-800">
+                      Resume Analysis Result
+                    </h3>
+                    <p className="text-sm text-gray-500 mt-1">
+                      AI extracted information from your resume
+                    </p>
+                  </div>
+
+                  {/* Projects */}
+                  {projects.length > 0 && (
+                    <div>
+                      <h4 className="text-lg font-semibold text-gray-800 mb-3 underline">
+                        Projects:
+                      </h4>
+
+                      <div className="grid gap-3">
+                        {projects.map((project, index) => (
+                          <div
+                            key={index}
+                            className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 hover:border-green-500 hover:bg-green-50 transition"
+                          >
+                            <p className="font-medium text-gray-700">
+                              {project}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Skills */}
+                  {skills.length > 0 && (
+                    <div>
+                      <h4 className="text-lg font-semibold text-gray-800 mb-3 underline">
+                        Skills:
+                      </h4>
+
+                      <div className="flex flex-wrap gap-2">
+                        {skills.map((skill, index) => (
+                          <span
+                            key={index}
+                            className="bg-green-100 text-green-700 px-3 py-1.5 rounded-full text-sm font-medium"
+                          >
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </motion.div>
+              )}
               <motion.button
                 disabled={!role || !experience}
                 whileHover={role && experience ? { scale: 1.03 } : {}}
