@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { applyAxisDelta, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import axios from "axios";
 import {
   FaUserTie,
@@ -9,8 +9,14 @@ import {
   FaBriefcase,
   FaFileUpload,
 } from "react-icons/fa";
+import {useDispatch,useSelector} from "react-redux"
+import { setUserData } from "../redux/userSlice";
+
 
 function Step1setup({ onStart }) {
+  
+  const {userData} = useSelector((state)=>state.user);
+  const dispatch = useDispatch();
   const [role, setRole] = useState("");
   const [experience, setExperience] = useState("");
   const [mode, setMode] = useState("Technical");
@@ -37,7 +43,7 @@ function Step1setup({ onStart }) {
       );
       console.log(result.data);
       setRole(result.data.role || "");
-      setExperience((await result).data.experience || "");
+      setExperience(result.data.experience || "");
       setProjects((await result).data.projects || []);
       setSkills((await result).data.skills || []);
       setResumeText((await result).data.resumeText || "");
@@ -47,6 +53,47 @@ function Step1setup({ onStart }) {
       console.log(error);
       setAnalyzing(false);
     }
+  };
+
+  // question genereation
+  const handleStart = async () => {
+  setLoading(true);
+
+  try {
+    const result = await axios.post(
+      import.meta.env.VITE_SERVER_URL +
+        "/api/v1/interview/generate-questions",
+      {
+        role,
+        experience,
+        mode,
+        resumeText,
+        projects,
+        skills,
+      },
+      {
+        withCredentials: true,
+      }
+    );
+
+    console.log(result.data);
+
+    if (userData) {
+      dispatch(
+        setUserData({
+          ...user,
+          credits: result.data.creditsLeft,
+        })
+      );
+    }
+
+    onStart(result.data);
+  } catch (error) {
+    console.log(error);
+  } finally {
+    setLoading(false);
+  }
+};
   };
 
   const steps = [
@@ -287,19 +334,22 @@ function Step1setup({ onStart }) {
                 </motion.div>
               )}
               <motion.button
-                disabled={!role || !experience}
+
+              onClick={handleStart}
+                disabled={!role || !experience ||loading}
                 whileHover={role && experience ? { scale: 1.03 } : {}}
                 whileTap={role && experience ? { scale: 0.95 } : {}}
                 className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white py-3 rounded-full text-lg font-semibold transition duration-300 shadow-md"
               >
-                Start Interview
+                {loading ? "starting....." :"Start Interview"}
               </motion.button>
             </div>
           </div>
         </motion.div>
       </div>
     </motion.div>
-  );
+  )
+
 }
 
 export default Step1setup;
