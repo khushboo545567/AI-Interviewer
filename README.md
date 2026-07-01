@@ -125,7 +125,7 @@ After completing all questions, users receive:
 
 ---
 
-# 📸 Main Modules
+# Main Modules
 
 - Google Authentication
 - AI Interview Generator
@@ -138,7 +138,7 @@ After completing all questions, users receive:
 
 ---
 
-# 🌟 Future Improvements
+# Future Improvements
 
 - Real-time AI voice interviewer
 - Video interview support
