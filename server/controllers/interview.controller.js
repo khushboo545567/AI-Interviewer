@@ -450,4 +450,71 @@ const finishInterview = async (req, res) => {
   }
 };
 
-export { analyzeResume, generateQues, submitAnswer, finishInterview };
+const getInterviewHistory = async (req, res) => {
+  try {
+    const interviews = await interviewModel
+      .find({ userId: req.userId })
+      .sort({ createdAt: -1 })
+      .select("role experience mode finalScore status createdAt");
+
+    return res.status(200).json(interviews);
+  } catch (error) {
+    return res.status(500).json({
+      message: `Failed to find interview: ${error.message}`,
+    });
+  }
+};
+
+const getInterview = async (req, res) => {
+  try {
+    const interview = await interviewModel.findOne({
+      _id: req.params.id,
+      userId: req.userId,
+    });
+    if (!interview) {
+      return res.status(400).json({ message: "interview not found" });
+    }
+    const totalQuestion = interview.questions.length;
+
+    let totalConfidence = 0;
+    let totalCommunication = 0;
+    let totalCorrectness = 0;
+
+    interview.questions.forEach((q) => {
+      totalConfidence += q.confidence || 0;
+      totalCommunication += q.communication || 0;
+      totalCorrectness += q.correctness || 0;
+    });
+
+    const avgConfidence = totalQuestion ? totalConfidence / totalQuestion : 0;
+
+    const avgCommunication = totalQuestion
+      ? totalCommunication / totalQuestion
+      : 0;
+
+    const avgCorrectness = totalQuestion ? totalCorrectness / totalQuestion : 0;
+
+    return res.status(200).json({
+      finalScore: interview.finalScore,
+
+      confidence: Number(avgConfidence.toFixed(1)),
+
+      communication: Number(avgCommunication.toFixed(1)),
+
+      correctness: Number(avgCorrectness.toFixed(1)),
+      questionWiseScore: interview.questions,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: `Failed to find interview report: ${error.message}`,
+    });
+  }
+};
+export {
+  analyzeResume,
+  generateQues,
+  submitAnswer,
+  finishInterview,
+  getInterviewHistory,
+  getInterview,
+};
