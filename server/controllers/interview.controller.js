@@ -18,8 +18,6 @@ const analyzeResume = async (req, res) => {
     // EXTRACT TEXT FROM PDF
     const pdf = await pdfjsLib.getDocument({ data: uint8Array }).promise;
 
-    console.log(pdf);
-
     let resumeText = "";
 
     // LOOPS THROUGH all pages
@@ -32,7 +30,6 @@ const analyzeResume = async (req, res) => {
     }
 
     resumeText = resumeText.replace(/\s+/g, " ").trim();
-    console.log("resumeText", resumeText);
 
     // SEND RESUME TO LLM
     const messages = [
@@ -61,10 +58,10 @@ const analyzeResume = async (req, res) => {
       .replace(/```json/g, "")
       .replace(/```/g, "")
       .trim();
-    console.log("aiResponse", aiResponse);
+
     // CONVERT STRING TO OBJECT
     const parsed = JSON.parse(cleanResponse);
-    console.log("parsed", parsed);
+
     fs.unlinkSync(filePath);
 
     // RETURN TO FRONTEND
@@ -210,7 +207,7 @@ Generate only the questions.
 
       questions: questionArray.map((q, index) => ({
         question: q,
-        difficulty: ["easy", "easy", "medium", "medium", "hard"][index],
+        difficulty: ["Easy", "Easy", "Medium", "Medium", "Hard"][index],
         timeLimit: [60, 60, 90, 90, 120][index],
       })),
     });
@@ -233,6 +230,15 @@ Generate only the questions.
 const submitAnswer = async (req, res) => {
   try {
     const { interviewId, questionIndex, answer, timeTaken } = req.body;
+    if (
+      !interviewId ||
+      questionIndex === undefined ||
+      timeTaken === undefined
+    ) {
+      return res.status(400).json({
+        message: "Missing required fields",
+      });
+    }
 
     const interview = await interviewModel.findById(interviewId);
 
@@ -249,7 +255,11 @@ const submitAnswer = async (req, res) => {
         message: "Question not found",
       });
     }
-
+    if (question.answer) {
+      return res.status(400).json({
+        message: "Answer already submitted.",
+      });
+    }
     // empty answer
     if (!answer || !answer.trim()) {
       question.score = 0;
@@ -337,7 +347,15 @@ Answer: ${answer}
 
     const airesponse = await askAi(messages);
 
-    const parsed = JSON.parse(airesponse);
+    let parsed;
+
+    try {
+      parsed = JSON.parse(airesponse);
+    } catch {
+      return res.status(500).json({
+        message: "AI returned invalid response",
+      });
+    }
 
     question.answer = answer;
     question.confidence = parsed.confidence;
@@ -345,6 +363,7 @@ Answer: ${answer}
     question.correctness = parsed.correctness;
     question.score = parsed.finalScore;
     question.feedback = parsed.feedback;
+    question.timeTaken = timeTaken;
 
     await interview.save();
 

@@ -6,6 +6,7 @@ import Step3report from "../components/Step3report";
 function InterviewPage() {
   const [step, setStep] = useState(1);
   const [interviewData, setInterviewData] = useState(null);
+  const [report, setReport] = useState(null);
   return (
     <div>
       {step === 1 && (
@@ -19,13 +20,17 @@ function InterviewPage() {
       {step === 2 && (
         <Step2interview
           interviewData={interviewData}
-          onFinish={(report) => {
-            setInterviewData(report);
+          // onFinish={(report) => {
+          //   setInterviewData(report);
+          //   setStep(3);
+          // }}
+          onFinish={(reportData) => {
+            setReport(reportData);
             setStep(3);
           }}
         />
       )}
-      {step === 3 && <Step3report report={interviewData} />}
+      {step === 3 && <Step3report report={report} />}
     </div>
   );
 }
