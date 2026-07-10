@@ -77,9 +77,6 @@ function Step3report({ report }) {
             </p>
           </div>
         </div>
-        <button className="bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-2xl shadow-md transition-all duration-300 font-semibold text-sm sm:text-base">
-          Download PDF
-        </button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
@@ -187,7 +184,7 @@ function Step3report({ report }) {
               {questionWiseScore.map((q, i) => (
                 <div
                   key={i}
-                  className="bg-gray-0 p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-gary-200"
+                  className="bg-gray-50 p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-gray-200"
                 >
                   <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 mb-4">
                     <div>
@@ -200,7 +197,7 @@ function Step3report({ report }) {
                       {q.score ?? 0}/10
                     </div>
                   </div>
-                  <div className="bg-green-50 border boreder-green-200 p-4 rounded-lg">
+                  <div className="bg-green-50 border border-green-200 p-4 rounded-lg">
                     <p className="text-xs text-green-600 font-semibold mb-1">
                       {" "}
                       AI Feedback
