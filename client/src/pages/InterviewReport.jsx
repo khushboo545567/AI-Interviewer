@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import Step3report from "../components/Step3report";
 
 function InterviewReport() {
   const { id } = useParams();
@@ -21,7 +22,8 @@ function InterviewReport() {
         console.log(error);
       }
     };
-  }, []);
+    fetchReport();
+  }, [id]);
 
   if (!report) {
     return (
@@ -31,6 +33,6 @@ function InterviewReport() {
     );
   }
 
-  return <Step3Report report={report} />;
+  return <Step3report report={report} />;
 }
 export default InterviewReport;

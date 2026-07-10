@@ -471,6 +471,7 @@ const getInterview = async (req, res) => {
       _id: req.params.id,
       userId: req.userId,
     });
+
     if (!interview) {
       return res.status(400).json({ message: "interview not found" });
     }

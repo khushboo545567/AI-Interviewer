@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-
+import { FaArrowLeft } from "react-icons/fa";
 function InterviewHistory() {
   const [inteviews, setInterviews] = useState([]);
   const navigate = useNavigate();
