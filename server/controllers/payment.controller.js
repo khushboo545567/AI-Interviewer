@@ -1,5 +1,7 @@
-import paymentModel from "../models/payment.model";
-import razorpay from "../services/razorpay.service";
+import paymentModel from "../models/payment.model.js";
+import razorpay from "../services/razorpay.service.js";
+import userModel from "../models/user.modle.js";
+import crypto from "crypto";
 
 const createOrder = async (req, res) => {
   try {
@@ -40,14 +42,51 @@ const verifyPayment = async (req, res) => {
     const body = razorpay_order_id + "|" + razorpay_payment_id;
 
     const expectedSignature = crypto
-      .createHmac("sha26", process.env.ROZARPAY_KEY_SECRET)
+      .createHmac("sha256", process.env.ROZARPAY_KEY_SECRET)
       .update(body)
       .digest("hex");
 
-    //   check if the payment is valid or not
+    if (expectedSignature !== razorpay_signature) {
+      return res.status(400).json({ message: "Invalid payment signature" });
+    }
+
+    const payment = await paymentModel.findOne({
+      razorpayOrderId: razorpay_order_id,
+    });
+    if (!payment) {
+      return res.status(404).json({ message: "Payment not found" });
+    }
+
+    if (payment.status === "paid") {
+      return res.json({ message: "Already processed" });
+    }
+
+    payment.status = "paid";
+    payment.razorpayPaymentId = razorpay_payment_id;
+    await payment.save();
+
+    // add credits
+    const updateUser = await userModel.findByIdAndUpdate(
+      payment.userId,
+      {
+        $inc: {
+          credits: payment.credits,
+        },
+      },
+      {
+        new: true,
+      },
+    );
+    return res.status(200).json({
+      success: true,
+      message: "Payment verified and credits added",
+      user: updateUser,
+    });
   } catch (error) {
     return res
       .status(500)
-      .json({ message: `failed to create razorpay order ${error}` });
+      .json({ message: `Failed to verify payment: ${error.message}` });
   }
 };
+
+export { createOrder, verifyPayment };

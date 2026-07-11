@@ -267,7 +267,7 @@ function Step2interview({ interviewData, onFinish }) {
         { interviewId },
         { withCredentials: true },
       );
-      console.log(result.data);
+
       onFinish(result.data);
     } catch (error) {
       console.log(error);

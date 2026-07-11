@@ -25,13 +25,12 @@ function Step1setup({ onStart }) {
   const [resumeText, setResumeText] = useState("");
   const [analysisDone, setAnalysisDone] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
-  console.log(resumeFile);
 
   const handleUplodResume = async () => {
     if (!resumeFile || analyzing) return;
     setAnalyzing(true);
     const formdata = new FormData();
-    console.log("testing");
+
     formdata.append("resume", resumeFile);
     try {
       const result = await axios.post(
@@ -39,7 +38,7 @@ function Step1setup({ onStart }) {
         formdata,
         { withCredentials: true },
       );
-      console.log(result.data);
+
       setRole(result.data.role || "");
       setExperience(result.data.experience || "");
       setProjects((await result).data.projects || []);
@@ -73,8 +72,6 @@ function Step1setup({ onStart }) {
           withCredentials: true,
         },
       );
-
-      console.log(result.data);
 
       if (userData) {
         dispatch(
