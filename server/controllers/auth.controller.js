@@ -14,8 +14,8 @@ const googleAuth = async (req, res) => {
 
     res.cookie("token", jwttoken, {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      secure: true,
+      sameSite: "strict",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
     return res.status(200).json(user);
