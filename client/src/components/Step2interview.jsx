@@ -231,20 +231,6 @@ function Step2interview({ interviewData, onFinish }) {
     }
   };
 
-  // const handleNext = async () => {
-  //   setAnswer("");
-  //   setFeedback("");
-  //   if (currentIndex + 1 >= questions.length) {
-  //     finishInterview();
-  //     return;
-  //   }
-  //   await speakText("Alright let's move to the next question.");
-  //   setCurrentIndex((prev) => prev + 1);
-  //   // setTimeout(() => {
-  //   //   if (isMicOn) startMic();
-  //   // }, 500);
-  // };
-
   const handleNext = async () => {
     if (currentIndex + 1 >= questions.length) {
       finishInterview();
