@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "https://ai-interviewer-1client-1mbl.onrender.com",
     credentials: true,
   }),
 );
